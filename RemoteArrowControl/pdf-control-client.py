@@ -8,7 +8,7 @@ def press_arrow(direction):
     key_code = 123 if direction == "left" else 124  # 123 = left, 124 = right
     subprocess.run([
         "osascript", "-e",
-        f'tell application \"System Events\" to key code {key_code}"
+        f'tell application \"System Events\" to key code {key_code}'
     ])
 
 def handle_connection(conn, addr):
