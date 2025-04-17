@@ -2,7 +2,7 @@ import socket
 from Foundation import NSAppleScript, NSError
 
 HOST = '0.0.0.0'
-PORT = 5005
+PORT = 3820
 
 def run_applescript(ascript):
     """

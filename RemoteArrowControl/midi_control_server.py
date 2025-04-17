@@ -3,7 +3,7 @@ import socket
 import time
 
 MAC_IP = "192.168.1.150"
-PORT = 5005
+PORT = 3820
 
 def choose_midi_device():
     inputs = mido.get_input_names()
