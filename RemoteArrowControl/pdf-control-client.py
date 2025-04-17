@@ -1,4 +1,5 @@
 import socket
+import multiprocessing
 from Foundation import NSAppleScript, NSError
 
 HOST = '0.0.0.0'
@@ -35,8 +36,11 @@ def press_arrow(direction):
         '''
     else:
         raise ValueError("Invalid direction. Must be 'left' or 'right'.")
-    
-    run_applescript(ascript)
+
+    # Run AppleScript in a separate process to prevent blocking the main thread
+    apple_process = multiprocessing.Process(target=run_applescript, args=(ascript,))
+    apple_process.start()
+    apple_process.join()  # Optionally wait for the process to complete
 
 def handle_connection(conn, addr):
     print(f"🔌 Connected by {addr}")
