@@ -70,8 +70,12 @@ def handle_connection(conn, addr):
     except Exception as e:
         print(f"⚠️ Error: {e}")
 
+
 def main():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        # Enable the reuse of the address, even if it's in a FIN_WAIT_2 or TIME_WAIT state
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        
         s.bind((HOST, PORT))
         s.listen(1)
         print(f"🚪 Listening on {HOST}:{PORT}...")
@@ -79,6 +83,7 @@ def main():
         while True:
             conn, addr = s.accept()
             handle_connection(conn, addr)
+
 
 if __name__ == "__main__":
     main()
