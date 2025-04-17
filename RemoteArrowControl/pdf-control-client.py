@@ -19,8 +19,6 @@ def run_applescript(ascript):
 def press_arrow(direction):
     if direction == "left":
         ascript = '''
-        tell application "Preview" to activate
-        delay 0.2 -- small delay to ensure it's active
         tell application "System Events"
             tell application process "Preview"
                 key code 123 -- left arrow
@@ -29,8 +27,6 @@ def press_arrow(direction):
         '''
     elif direction == "right":
         ascript = '''
-        tell application "Preview" to activate
-        delay 0.2 -- small delay to ensure it's active
         tell application "System Events"
             tell application process "Preview"
                 key code 124 -- right arrow
