@@ -24,30 +24,40 @@ def choose_midi_device():
             pass
         print("Invalid selection, try again.")
 
-def send_command(direction):
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+def connect_to_client():
+    while True:
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect((MAC_IP, PORT))
-            s.sendall(direction.encode())
-    except ConnectionRefusedError:
-        print("⚠️ Could not connect to client")
+            print("🔗 Connected to client!")
+            return s
+        except (ConnectionRefusedError, OSError):
+            print("⏳ Waiting for client...")
+            time.sleep(2)
 
 def main():
     device = choose_midi_device()
     print(f"✅ Listening on '{device}'...")
+    sock = connect_to_client()
+
     with mido.open_input(device) as inport:
         while True:
-            for msg in inport.iter_pending():
-                if msg.type == "control_change" and msg.value:
-                    if msg.control == 116:
-                        print("← LEFT triggered")
-                        send_command("left")
-                    elif msg.control == 117:
-                        print("→ RIGHT triggered")
-                        send_command("right")
-            time.sleep(0.01)
+            try:
+                for msg in inport.iter_pending():
+                    if msg.type == "control_change" and msg.value:
+                        if msg.control == 116:
+                            print("← LEFT triggered")
+                            sock.sendall(b"left")
+                        elif msg.control == 117:
+                            print("→ RIGHT triggered")
+                            sock.sendall(b"right")
+                time.sleep(0.01)
+
+            except (BrokenPipeError, ConnectionResetError):
+                print("⚠️ Lost connection to client. Reconnecting...")
+                sock.close()
+                sock = connect_to_client()
 
 if __name__ == "__main__":
     main()
-
 
